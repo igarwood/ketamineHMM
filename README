@@ -1,0 +1,62 @@
+betaHMM
+
+Code and data repository for:
+A hidden Markov model reliably characterizes ketamine-induced spectral 
+dynamics in macaque LFP and human EEG
+Indie Garwood*, Sourish Chakravarty*, Jacob Donoghue, Meredith Mahkne,
+Pegah Kahali, Shubham Chamadia, Oluwaseun Akeju, Earl K. Miller, 
+Emery N. Brown+
+* Equal contribution
++ Senior author
+
+Repository created by
+Indie Garwood 
+July 2021
+
+This directory models ketamine spectral data using a hidden markov model
+
+**Note that this repository uses LFS: https://git-lfs.github.com
+
+ketamineAnalysis is the primary script which will 
+- load spectral data
+- estimate the HMM
+- run the Viterbi algorithm
+- (optional) plot figures
+- (optional) save the estimated model
+
+EEGanalysis is a second script which will perform a more paired-down 
+analysis of a single human EEG file. It
+- loads the spectrogram from a single human session 
+- estimates a 5 state HMM
+- outputs the most likely state path (according to the viterbi algorithm)
+- plots the spectrogram and state path
+
+Folders:
+./data: contains the data for all figures presented in the manuscript
+./plots: contains the functions to create all plots presented in the 
+    manuscript
+./plots/figures: contains scripts that will load the data and generate 
+    each manuscript panel
+./preprocessing: contains preprocessing utilities to load data, extract 
+    time points, and calculate scaled power
+./HMM: contains functions for estimating the HMM model, calculating model 
+    likelihood, and the viterbi algorithm
+./analysis: contains functions for analyzing the model parameters after a 
+    model has been estimated
+./analysis/beta_compare: contains functions and example scripts for 
+    comparing beta distributions 
+./analysis/duration_stats: contains functions and example scripts for 
+    calculating duration statistics from an estimated HMM
+./simulation: contains functions and example scripts for simulating a 
+    spectrogram from a known markov model, estimating an HMM from that 
+    spectrogram, and calculating accuracy measures; note that this analysis
+    requires an estimated model as input
+./model_output: where optionally saved HMM models will be stored
+
+References:
+Machine Learning Toolbox, Version 1.00, Zoubin Ghahramani, University of 
+Toronto (1996)
+Hidden Markov Model (HMM) Toolbox, Kevin Murphy (1998)
+
+
+
