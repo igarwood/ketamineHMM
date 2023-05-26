@@ -4,7 +4,7 @@ if nargin < 4
     N_MC = 4000;
 end
 if nargin < 3
-    N = 2000;
+    N = 4000;
 end
 K = size(A,1);
 mean_dur = zeros(1,N_MC);

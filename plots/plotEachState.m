@@ -1,4 +1,4 @@
-function [ax] = plotEachState(spectrogram, path, spec_freq,human)
+function [ax] = plotEachState(spectrogram, path, spec_freq,color_scale,y_lim)
 
 K = max(path);
 for k = 1:K
@@ -12,12 +12,14 @@ for k = 1:K
     axis xy; 
     ylabel('Frequency (Hz)');
     title(strcat('State',num2str(k)));
-    ylim([0 50])
-    if human
-        caxis([-20 15]);
-    else
-       caxis([12 45]);
-    end
+    %ylim([0 50])
+    ylim(y_lim);
+    caxis(color_scale);
+%     if human
+%         caxis([-20 15]);
+%     else
+%        caxis([12 45]);
+%     end
     colormap(gca,'jet')
     ax = gca;
 end

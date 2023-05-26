@@ -23,7 +23,7 @@
 
 
 function [betaa_cell,betab_cell,A_cell,pi_cell,LL]...
-    =hmmbeta_fit(Y,N,K,max_cycles,tolerance,km_init)
+    =hmmbeta_fit_beta_fixed(Y,N,K,max_cycles,tolerance,km_init,beta_a,beta_b)
 
 
 if nargin<6   km_init = 0; end
@@ -44,17 +44,7 @@ options = optimset('Display','off', 'UseParallel' , false,'MaxFunEvals',5000);
 
 Var = zeros(K,H);
 Mu = zeros(K,H);
-beta_a = zeros(K,H);
-beta_b = zeros(K,H);
 
-% First estimate of beta distribution parameters:
-for h = 1:H
-    y = Y(:,h);
-    beta_ab = lsqnonlin(@(par) betalik(y,par),p0,zeros(size(p0)),...
-        [],options);
-    beta_a(:,h) = repmat(beta_ab(1),K,1);
-    beta_b(:,h) = repmat(beta_ab(2),K,1);
-end
 
 % K-means initialization will first create clusters and estimate parameters
 % based on which each datapoint belongs to
@@ -76,21 +66,6 @@ if km_init
         end
     end
     
-    for k = 1:K
-      for h = 1:H
-        p0 = [beta_a(k,h),beta_b(k,h)];
-        beta_ab = lsqnonlin(@(p2) betalik2(Y(:,h),gamma0(:,k),p2),p0,...
-            zeros(size(p0)),[],options);
-        if beta_ab(1) < 1 && beta_ab(2) < 1  
-
-            p0 = [beta_a(k,h),beta_b(k,h),0];
-            beta_ab = lsqnonlin(@(p2) betalik3(Y(:,h),gamma0(:,k),p2),p0,...
-                zeros(size(p0)),[],options);
-        end
-        beta_a(k,h) = beta_ab(1);
-        beta_b(k,h) = beta_ab(2);
-      end
-    end
     
     % transition matrix 
     sxi=rsum(xi0')';
@@ -184,32 +159,6 @@ while cycle <= max_cycles
   
   %%%% M STEP 
   % outputs
-
- for k = 1:K
-      beta_ab = [];
-      for h = 1:H
-        p0 = [beta_a(k,h),beta_b(k,h)];
-        try
-            beta_ab = lsqnonlin(@(p) betalik2(Y(:,h),Gamma(:,k),p),p0,...
-                zeros(size(p0)),[],options);
-%         p0 = [beta_a(k,h),beta_b(k,h),0];
-%         try
-%             beta_ab = lsqnonlin(@(p) betalik2_minvar(Y(:,h),Gamma(:,k),p),p0,...
-%                 zeros(size(p0)),[],options);
-            if beta_ab(1) < 1 && beta_ab(2) < 1  
-                p0 = [beta_a(k,h),beta_b(k,h),0];
-                beta_ab = lsqnonlin(@(p) betalik3(Y(:,h),Gamma(:,k),p),p0,...
-                    zeros(size(p0)),[],options);
-            end
-        catch
-            sprintf(['error fitting beta distribution on cycle ',...
-                num2str(cycle)]);
-        end
-        
-        beta_a(k,h) = beta_ab(1);
-        beta_b(k,h) = beta_ab(2);
-      end
-  end
 
   % transition matrix 
   sxi=rsum(Xi')';

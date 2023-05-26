@@ -16,10 +16,11 @@ end
 H = size(freq_bands,1);
 
 if nargin < 9
+    session_trials = {[1:L]};
     trial_analysis = 0;
+    S = length(session_trials);
 else
     trial_analysis = 1;
-    S = length(session_trials);
 end
 
 % HMM Settings:
@@ -29,8 +30,8 @@ tolerance = 0.0001;
 % Calculate observations (y) from spectrogram for each session
 if isempty(Y)
     Y = zeros(sum(N),H);
+    scale_k = zeros(L,H);
     if trial_analysis == 0
-        scale_k = zeros(L,H);
         for l = 1:L
             ind1 = sum(N(1:l-1)) + 1;
             ind2 = sum(N(1:l)); 
@@ -38,17 +39,19 @@ if isempty(Y)
                 scale_power(spectrogram(ind1:ind2,:),spec_freq, freq_bands);
         end  
     else
-        scale_k = zeros(S,H);
         for s = 1:S
-            l_a = session_trials{s}(1);
-            l_b = session_trials{s}(end);
-            ind1 = sum(N(1:l_a-1)) + 1;
-            ind2 = sum(N(1:l_b)); 
-            [Y(ind1:ind2,:),scale_k(s,:)] = ...
-                scale_power(spectrogram(ind1:ind2,:),spec_freq,...
-                freq_bands);
-        end   
+            L_s = length(trial_analysis{s})
+            spec_cat = [];
+            ind_cat 
+            for l = 1:L_s
+                l_s = trial_analysis{s}(l);
+                ind1 = sum(N(1:l_s-1)) + 1;
+                ind2 = sum(N(1:l_s));
+                spec_cat = [spec_cat;spectrogram(ind1:ind2,:)];
+            end
+            
     end
+    
 else
     scale_k = ones(L,H);
 end

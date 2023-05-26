@@ -21,6 +21,11 @@ sim_data = 0;
 % Human data: human = 1
 % NHP data: human = 0
 human = 0;
+if human
+    color_scale = [-20 15];
+else
+    color_scale = [12 45];
+end
 
 multisession = 0;
 subject_numbers = 1;
@@ -77,7 +82,7 @@ end
 % Load the data:
 [spectrogram,time,spec_freq,N] = load_data(file,sessions, start_t, end_t);
 Y = [];
-dt = time(2)-time(1);
+%dt = time(2)-time(1);
 
 % Across each desired model order, estimate the beta-HMM (repeat 'Nruns'
 % times to account for potential local optima)
@@ -125,13 +130,16 @@ for k = 1:length(K)
                 time_figs = time;
             end
             figure
+            subplot(2,1,1);
             ax(1) = plotSpectrogram(spectrogram(ind,:), time_figs(ind), ...
-                spec_freq, human, tunit);
-            figure
+                spec_freq, color_scale, tunit);
+            ylim([0,50])
+            subplot(2,1,2);
             ax(2) = plotPath(path(ind),time_figs(ind), tunit);
             linkaxes(ax,'x')
             figure
-            plotEachState(spectrogram(ind,:), path(ind), spec_freq,human);
+            plotEachState(spectrogram(ind,:), path(ind), spec_freq,...
+                color_scale,[0,50]);
         end
     end
     if flag_save
