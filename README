@@ -31,6 +31,8 @@ analysis of a single human EEG file. It
 - outputs the most likely state path (according to the viterbi algorithm)
 - plots the spectrogram and state path
 
+multitrial_analysis is a script which will estimate an HMM from trial data. There is an example using ketamine data. 
+
 Folders:
 ./data: contains the data for all figures presented in the manuscript
 ./plots: contains the functions to create all plots presented in the 
